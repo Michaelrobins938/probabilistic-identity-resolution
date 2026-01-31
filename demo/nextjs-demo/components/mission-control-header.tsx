@@ -16,10 +16,15 @@ export function MissionControlHeader() {
   const [uptime, setUptime] = useState(0)
   const [alerts, setAlerts] = useState<Alert[]>([])
   const [currentTime, setCurrentTime] = useState(new Date())
-  const [sessionId] = useState(() => 
-    'OPS-' + Math.random().toString(36).substring(2, 8).toUpperCase()
-  )
-  const [gridCoords, setGridCoords] = useState({ x: 0, y: 0 })
+  const [sessionId, setSessionId] = useState('OPS-INITIALIZING')
+  const [gridCoords, setGridCoords] = useState({ x: 649, y: 37 })
+  const [mounted, setMounted] = useState(false)
+
+  // Generate session ID only on client to avoid hydration mismatch
+  useEffect(() => {
+    setSessionId('OPS-' + Math.random().toString(36).substring(2, 8).toUpperCase())
+    setMounted(true)
+  }, [])
 
   // Update time and uptime
   useEffect(() => {
