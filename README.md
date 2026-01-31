@@ -18,7 +18,7 @@
 
 **Mission Control Interface**: Real-time identity resolution at Netflix scale
 
-![Demo Screenshot](docs/demo-screenshot.png)
+![Demo Screenshot](docs/screencapture-identity-resolution-demo-vercel-app-2026-01-31-02_21_32.png)
 
 ### Quick Start
 1. Click **[Live Demo](https://identity-resolution-demo.vercel.app/)** ↑
