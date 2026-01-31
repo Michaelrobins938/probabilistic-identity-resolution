@@ -1,0 +1,30 @@
+version: '3.8'
+
+services:
+  # 1. The Core Application
+  attribution-api:
+    build: .
+    ports:
+      - "8000:8000"
+    environment:
+      - REDIS_URL=redis://redis:6379/0
+      - ENVIRONMENT=production
+    depends_on:
+      - redis
+    deploy:
+      resources:
+        limits:
+          cpus: '1.0'
+          memory: 512M
+
+  # 2. Session Store (Production Requirement)
+  redis:
+    image: "redis:alpine"
+    ports:
+      - "6379:6379"
+
+  # 3. Prometheus Metrics (Optional - adds "Senior" flair)
+  prometheus:
+    image: prom/prometheus
+    ports:
+      - "9090:9090"
