@@ -1,0 +1,374 @@
+apiVersion: v1
+kind: Namespace
+metadata:
+  name: identity-resolution
+  labels:
+    name: identity-resolution
+    app.kubernetes.io/name: identity-resolution
+    app.kubernetes.io/component: namespace
+
+---
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: identity-resolution-config
+  namespace: identity-resolution
+data:
+  # API Configuration
+  API_HOST: "0.0.0.0"
+  API_PORT: "8000"
+  API_WORKERS: "4"
+  
+  # Redis Configuration
+  REDIS_HOST: "redis"
+  REDIS_PORT: "6379"
+  REDIS_DB: "0"
+  
+  # Database Configuration
+  DB_HOST: "postgres"
+  DB_PORT: "5432"
+  DB_NAME: "identity_resolution"
+  
+  # Performance Tuning
+  BATCH_SIZE: "100"
+  CACHE_TTL: "300"
+  ENABLE_CACHING: "true"
+  
+  # Operational SLOs (documented for monitoring)
+  SLO_LATENCY_P99: "110ms"
+  SLO_THROUGHPUT: "10000"
+  SLO_ERROR_RATE: "0.001"
+  SLO_CACHE_HIT_RATE: "0.35"
+
+---
+apiVersion: v1
+kind: Secret
+metadata:
+  name: identity-resolution-secrets
+  namespace: identity-resolution
+type: Opaque
+stringData:
+  DB_USER: "postgres"
+  DB_PASSWORD: "changeme-in-production"
+  JWT_SECRET: "changeme-in-production"
+  API_KEY: "changeme-in-production"
+
+---
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: identity-resolution-api
+  namespace: identity-resolution
+  labels:
+    app: identity-resolution
+    component: api
+spec:
+  replicas: 3
+  selector:
+    matchLabels:
+      app: identity-resolution
+      component: api
+  template:
+    metadata:
+      labels:
+        app: identity-resolution
+        component: api
+    spec:
+      containers:
+      - name: api
+        image: identity-resolution:latest
+        imagePullPolicy: IfNotPresent
+        ports:
+        - containerPort: 8000
+          name: http
+          protocol: TCP
+        
+        envFrom:
+        - configMapRef:
+            name: identity-resolution-config
+        
+        env:
+        - name: DB_USER
+          valueFrom:
+            secretKeyRef:
+              name: identity-resolution-secrets
+              key: DB_USER
+        - name: DB_PASSWORD
+          valueFrom:
+            secretKeyRef:
+              name: identity-resolution-secrets
+              key: DB_PASSWORD
+        - name: JWT_SECRET
+          valueFrom:
+            secretKeyRef:
+              name: identity-resolution-secrets
+              key: JWT_SECRET
+        
+        resources:
+          requests:
+            memory: "2Gi"
+            cpu: "1000m"
+          limits:
+            memory: "4Gi"
+            cpu: "2000m"
+        
+        livenessProbe:
+          httpGet:
+            path: /health
+            port: 8000
+          initialDelaySeconds: 30
+          periodSeconds: 10
+          timeoutSeconds: 5
+          failureThreshold: 3
+        
+        readinessProbe:
+          httpGet:
+            path: /health
+            port: 8000
+          initialDelaySeconds: 5
+          periodSeconds: 5
+          timeoutSeconds: 3
+          failureThreshold: 2
+        
+        volumeMounts:
+        - name: snapshots
+          mountPath: /app/snapshots
+      
+      volumes:
+      - name: snapshots
+        emptyDir: {}
+
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: identity-resolution-api
+  namespace: identity-resolution
+  labels:
+    app: identity-resolution
+    component: api
+spec:
+  type: ClusterIP
+  ports:
+  - port: 80
+    targetPort: 8000
+    protocol: TCP
+    name: http
+  selector:
+    app: identity-resolution
+    component: api
+
+---
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: redis
+  namespace: identity-resolution
+  labels:
+    app: identity-resolution
+    component: redis
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: identity-resolution
+      component: redis
+  template:
+    metadata:
+      labels:
+        app: identity-resolution
+        component: redis
+    spec:
+      containers:
+      - name: redis
+        image: redis:7-alpine
+        ports:
+        - containerPort: 6379
+          name: redis
+        resources:
+          requests:
+            memory: "512Mi"
+            cpu: "250m"
+          limits:
+            memory: "1Gi"
+            cpu: "500m"
+        volumeMounts:
+        - name: redis-data
+          mountPath: /data
+      volumes:
+      - name: redis-data
+        emptyDir: {}
+
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: redis
+  namespace: identity-resolution
+  labels:
+    app: identity-resolution
+    component: redis
+spec:
+  type: ClusterIP
+  ports:
+  - port: 6379
+    targetPort: 6379
+  selector:
+    app: identity-resolution
+    component: redis
+
+---
+apiVersion: apps/v1
+kind: StatefulSet
+metadata:
+  name: postgres
+  namespace: identity-resolution
+  labels:
+    app: identity-resolution
+    component: postgres
+spec:
+  serviceName: postgres
+  replicas: 1
+  selector:
+    matchLabels:
+      app: identity-resolution
+      component: postgres
+  template:
+    metadata:
+      labels:
+        app: identity-resolution
+        component: postgres
+    spec:
+      containers:
+      - name: postgres
+        image: postgres:15-alpine
+        ports:
+        - containerPort: 5432
+          name: postgres
+        env:
+        - name: POSTGRES_DB
+          valueFrom:
+            configMapKeyRef:
+              name: identity-resolution-config
+              key: DB_NAME
+        - name: POSTGRES_USER
+          valueFrom:
+            secretKeyRef:
+              name: identity-resolution-secrets
+              key: DB_USER
+        - name: POSTGRES_PASSWORD
+          valueFrom:
+            secretKeyRef:
+              name: identity-resolution-secrets
+              key: DB_PASSWORD
+        resources:
+          requests:
+            memory: "1Gi"
+            cpu: "500m"
+          limits:
+            memory: "2Gi"
+            cpu: "1000m"
+        volumeMounts:
+        - name: postgres-data
+          mountPath: /var/lib/postgresql/data
+  volumeClaimTemplates:
+  - metadata:
+      name: postgres-data
+    spec:
+      accessModes: ["ReadWriteOnce"]
+      resources:
+        requests:
+          storage: 50Gi
+
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: postgres
+  namespace: identity-resolution
+  labels:
+    app: identity-resolution
+    component: postgres
+spec:
+  type: ClusterIP
+  ports:
+  - port: 5432
+    targetPort: 5432
+  selector:
+    app: identity-resolution
+    component: postgres
+
+---
+apiVersion: networking.k8s.io/v1
+kind: Ingress
+metadata:
+  name: identity-resolution-ingress
+  namespace: identity-resolution
+  annotations:
+    nginx.ingress.kubernetes.io/rewrite-target: /
+    nginx.ingress.kubernetes.io/rate-limit: "1000"
+spec:
+  rules:
+  - host: identity-resolution.example.com
+    http:
+      paths:
+      - path: /
+        pathType: Prefix
+        backend:
+          service:
+            name: identity-resolution-api
+            port:
+              number: 80
+
+---
+apiVersion: autoscaling/v2
+kind: HorizontalPodAutoscaler
+metadata:
+  name: identity-resolution-api-hpa
+  namespace: identity-resolution
+spec:
+  scaleTargetRef:
+    apiVersion: apps/v1
+    kind: Deployment
+    name: identity-resolution-api
+  minReplicas: 3
+  maxReplicas: 10
+  metrics:
+  - type: Resource
+    resource:
+      name: cpu
+      target:
+        type: Utilization
+        averageUtilization: 70
+  - type: Resource
+    resource:
+      name: memory
+      target:
+        type: Utilization
+        averageUtilization: 80
+  behavior:
+    scaleUp:
+      stabilizationWindowSeconds: 60
+      policies:
+      - type: Percent
+        value: 100
+        periodSeconds: 15
+    scaleDown:
+      stabilizationWindowSeconds: 300
+      policies:
+      - type: Percent
+        value: 10
+        periodSeconds: 60
+
+---
+apiVersion: policy/v1
+kind: PodDisruptionBudget
+metadata:
+  name: identity-resolution-api-pdb
+  namespace: identity-resolution
+spec:
+  minAvailable: 2
+  selector:
+    matchLabels:
+      app: identity-resolution
+      component: api
