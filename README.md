@@ -12,6 +12,28 @@
 
 ---
 
+## 🎯 Live Interactive Demo
+
+**[Try it Now →](https://identity-demo.vercel.app)** (Deploy your own below)
+
+Watch the identity resolution system work in real-time:
+
+- **Household Simulation**: 3 distinct personas (Parent, Teen, Child) sharing one account
+- **Real-Time Assignment**: Sessions assigned with probabilistic confidence scores (e.g., "Person A: 85%")
+- **Behavioral Clustering**: Animated visualization of sessions clustering by behavior
+- **Attribution Dashboard**: Marketing channel breakdown (Person A → Email, Person B → Social)
+
+**Quick Deploy**: 
+```bash
+cd demo/identity-demo
+npm install && npm run build
+npx vercel --prod
+```
+
+**[📖 Demo Documentation](./demo/DEMO_README.md)** | **[🎨 React Code](./demo/identity-demo/)**
+
+---
+
 ## Executive Summary
 
 This repository presents a **production-grade reference implementation** of a probabilistic identity resolution system engineered for streaming platforms operating at Netflix-scale. The system solves the fundamental attribution challenge in shared-account environments: the inability to distinguish individual viewers within a single household account.
