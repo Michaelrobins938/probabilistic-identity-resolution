@@ -6,6 +6,10 @@
 ![Latency](https://img.shields.io/badge/p99_latency-104ms-blue)
 ![License](https://img.shields.io/badge/license-MIT-lightgrey)
 
+![Cover Image](docs/coverimage.png)
+
+> **Note:** This is a **Production-Grade Reference Implementation**. It contains the full algorithmic core, API infrastructure, and privacy pipelines designed for Netflix-scale data. It has been stress-tested against 50M synthetic user profiles to validate sub-100ms latency.
+
 > **Note:** This is a **Production-Grade Reference Implementation**. It contains the full algorithmic core, API infrastructure, and privacy pipelines designed for Netflix-scale data. It has been stress-tested against 50M synthetic user profiles to validate sub-100ms latency.
 
 ---
@@ -20,11 +24,17 @@ In shared streaming environments (Netflix, Disney+, Hulu), **40-60% of ad conver
 
 ---
 
-## ⚡ Architecture
+## ⚡ System Architecture
+
+![System Architecture](docs/Architecturediagram.png)
+
+**Data Flow:**
+```
 [Client] -> [API Gateway] -> [Redis Buffer] -> [Incremental Clustering Engine] -> [Postgres Identity Graph]
                                       ^
                                       |
                                [Drift Detection]
+```
 
 ## 🛠️ Key Differentiators
 
@@ -34,6 +44,10 @@ In shared streaming environments (Netflix, Disney+, Hulu), **40-60% of ad conver
 | **Complex Behaviors** | **Gaussian Mixture Models (GMM)** with elliptical covariance | Captures non-circular habits (e.g., "Binge Watching"). |
 | **Privacy-First** | **Cryptographic Deletion Pipeline** | Complies with GDPR "Right to Erasure" without model retraining. |
 | **Drift Awareness** | **KL-Divergence Monitoring** | Auto-detects household changes (e.g., kids growing up). |
+
+### Technical Overview
+
+![Technical Infographic](docs/infographic.png)
 
 ---
 
@@ -60,6 +74,10 @@ python simulation/run_canary.py
    - Accuracy:    81.4% (vs Account Baseline: 68%)
 🎉 STATUS: READY FOR PRODUCTION
 ```
+
+### Performance Metrics
+
+![Performance Metrics](docs/infographic2.png)
 
 ---
 
