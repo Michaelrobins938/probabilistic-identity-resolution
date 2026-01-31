@@ -12,25 +12,29 @@
 
 ---
 
-## 🎯 Live Interactive Demo
+# 🚀 Live Production Demo
 
-**[Try it Now →](https://identity-demo.vercel.app)** (Deploy your own below)
+[![Try Live Demo](https://img.shields.io/badge/🚀-Try%20Live%20Demo-success?style=for-the-badge&logo=vercel)](https://identity-resolution-demo.vercel.app/)
 
-Watch the identity resolution system work in real-time:
+**Mission Control Interface**: Real-time identity resolution at Netflix scale
 
-- **Household Simulation**: 3 distinct personas (Parent, Teen, Child) sharing one account
-- **Real-Time Assignment**: Sessions assigned with probabilistic confidence scores (e.g., "Person A: 85%")
-- **Behavioral Clustering**: Animated visualization of sessions clustering by behavior
-- **Attribution Dashboard**: Marketing channel breakdown (Person A → Email, Person B → Social)
+![Demo Screenshot](docs/demo-screenshot.png)
 
-**Quick Deploy**: 
-```bash
-cd demo/identity-demo
-npm install && npm run build
-npx vercel --prod
-```
+### Quick Start
+1. Click **[Live Demo](https://identity-resolution-demo.vercel.app/)** ↑
+2. Watch simulation auto-start (or click "⚡ Run 30-Second Demo" for quick overview)
+3. See sessions assigned to people in real-time with confidence scores
+4. Check Attribution Dashboard for $44M ROI demonstration
 
-**[📖 Demo Documentation](./demo/DEMO_README.md)** | **[🎨 React Code](./demo/identity-demo/)**
+### What You'll See
+- **📊 Data Flow Pipeline**: 24K events/sec processing through 4 stages
+- **⚡ Performance Metrics**: 81.4% accuracy at 104ms p99 latency  
+- **🎮 Mission Control**: Real-time system health monitoring
+- **📈 Attribution Comparison**: Account-level vs Person-level ROI
+- **🕸️ Identity Graph**: Network visualization of device-person relationships
+- **🎓 Interactive Tour**: 9-step guided walkthrough of the system
+
+**[📖 Demo Documentation](./demo/DEMO_README.md)** | **[🎨 React Code](./demo/nextjs-demo/)** | **[🔗 Share Demo](https://identity-resolution-demo.vercel.app/)**
 
 ---
 

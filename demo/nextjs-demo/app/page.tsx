@@ -10,6 +10,8 @@ import { ConfidenceViz } from '@/components/confidence-viz'
 import { WhatIfComparison } from '@/components/what-if-comparison'
 import { ExportButton } from '@/components/export-button'
 import { MissionControlHeader } from '@/components/mission-control-header'
+import { SocialProofBanner } from '@/components/social-proof-banner'
+import { ShareButton } from '@/components/share-button'
 import { SystemTerminal } from '@/components/system-terminal'
 import { DataFlowPipeline } from '@/components/data-flow-pipeline'
 import { InteractiveTour } from '@/components/interactive-tour'
@@ -49,6 +51,9 @@ export default function Home() {
         <MissionControlHeader />
       </div>
 
+      {/* Social Proof Banner */}
+      <SocialProofBanner />
+
       {/* Control Bar */}
       <div className="bg-[#1a1a1a] border-b-2 border-[#404040] px-4 py-3">
         <div className="max-w-[1600px] mx-auto flex items-center justify-between">
@@ -82,6 +87,8 @@ export default function Home() {
               <Layers className="w-4 h-4" />
               <span>Architecture</span>
             </button>
+            
+            <ShareButton />
             
             <ExportButton />
           </div>

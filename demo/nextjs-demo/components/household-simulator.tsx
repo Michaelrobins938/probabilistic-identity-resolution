@@ -3,7 +3,7 @@
 import { useEffect, useState } from 'react'
 import { useStore, generateSession } from '@/lib/store'
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card'
-import { Monitor, Smartphone, Tablet, Play, Pause, RotateCcw } from 'lucide-react'
+import { Monitor, Smartphone, Tablet, Play, Pause, RotateCcw, Zap } from 'lucide-react'
 import { cn } from '@/lib/utils'
 
 const deviceIcons = {
@@ -13,8 +13,31 @@ const deviceIcons = {
 }
 
 export function HouseholdSimulator() {
-  const { persons, isRunning, speed, toggleSimulation, setSpeed, reset, sessions } = useStore()
+  const { persons, isRunning, speed, toggleSimulation, setSpeed, reset, sessions, startSimulation } = useStore()
   const [activeDevices, setActiveDevices] = useState<Set<string>>(new Set())
+  const [showQuickDemo, setShowQuickDemo] = useState(false)
+
+  // Auto-start after 2 seconds on page load
+  useEffect(() => {
+    const timer = setTimeout(() => {
+      if (!isRunning && sessions.length === 0) {
+        startSimulation()
+      }
+    }, 2000)
+    return () => clearTimeout(timer)
+  }, [])
+
+  // Quick Demo mode - run for 30 seconds then pause
+  const runQuickDemo = () => {
+    setSpeed(4)
+    startSimulation()
+    setShowQuickDemo(true)
+    
+    setTimeout(() => {
+      useStore.getState().stopSimulation()
+      setShowQuickDemo(false)
+    }, 30000)
+  }
 
   useEffect(() => {
     if (!isRunning) {
@@ -60,11 +83,22 @@ export function HouseholdSimulator() {
               "flex items-center gap-2 px-4 py-2 rounded-lg font-medium transition-colors",
               isRunning
                 ? "bg-red-600 hover:bg-red-700 text-white"
-                : "bg-netflix-red hover:bg-red-700 text-white"
+                : "bg-netflix-red hover:bg-red-700 text-white animate-pulse"
             )}
           >
             {isRunning ? <Pause size={18} /> : <Play size={18} />}
             {isRunning ? 'Stop' : 'Start'}
+          </button>
+          <button
+            onClick={runQuickDemo}
+            className={cn(
+              "flex items-center gap-2 px-4 py-2 rounded-lg font-medium transition-colors",
+              "bg-[#ffb800] hover:bg-[#e6a600] text-black",
+              showQuickDemo && "ring-2 ring-[#ffb800] ring-offset-2 ring-offset-black"
+            )}
+          >
+            <Zap size={18} />
+            Run 30-Second Demo
           </button>
           <button
             onClick={reset}
