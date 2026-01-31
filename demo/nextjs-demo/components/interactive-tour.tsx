@@ -79,57 +79,202 @@ export function InteractiveTour() {
 
   const currentStep = tourSteps[currentStepIndex]
 
+  const SCROLL_PADDING = 20
+  const TOOLTIP_OFFSET = 20
+  const MIN_EDGE_MARGIN = 20
+
+  const scrollElementIntoView = useCallback((element: Element) => {
+    const rect = element.getBoundingClientRect()
+    const scrollX = window.scrollX || window.pageXOffset
+    const scrollY = window.scrollY || window.pageYOffset
+    
+    // Calculate ideal scroll position with padding
+    let targetTop = rect.top + scrollY - SCROLL_PADDING
+    let targetLeft = rect.left + scrollX - SCROLL_PADDING
+    let targetBottom = rect.bottom + scrollY + SCROLL_PADDING
+    let targetRight = rect.right + scrollX + SCROLL_PADDING
+    
+    const viewportHeight = window.innerHeight
+    const viewportWidth = window.innerWidth
+    const documentHeight = document.documentElement.scrollHeight
+    const documentWidth = document.documentElement.scrollWidth
+    
+    // Determine if scrolling is needed
+    const isAboveViewport = rect.top < SCROLL_PADDING
+    const isBelowViewport = rect.bottom > viewportHeight - SCROLL_PADDING
+    const isLeftOfViewport = rect.left < SCROLL_PADDING
+    const isRightOfViewport = rect.right > viewportWidth - SCROLL_PADDING
+    
+    if (isAboveViewport || isBelowViewport || isLeftOfViewport || isRightOfViewport) {
+      // Calculate center position for smooth scrolling
+      const elementCenterY = rect.top + scrollY + rect.height / 2
+      const elementCenterX = rect.left + scrollX + rect.width / 2
+      
+      // Determine scroll direction and position
+      let scrollToY: number | undefined
+      let scrollToX: number | undefined
+      
+      // Vertical scroll
+      if (isAboveViewport) {
+        scrollToY = Math.max(0, targetTop)
+      } else if (isBelowViewport) {
+        // If element is taller than viewport, scroll to top with padding
+        if (rect.height > viewportHeight - 2 * SCROLL_PADDING) {
+          scrollToY = targetTop
+        } else {
+          scrollToY = targetBottom - viewportHeight
+        }
+      }
+      
+      // Horizontal scroll
+      if (isLeftOfViewport) {
+        scrollToX = Math.max(0, targetLeft)
+      } else if (isRightOfViewport) {
+        if (rect.width > viewportWidth - 2 * SCROLL_PADDING) {
+          scrollToX = targetLeft
+        } else {
+          scrollToX = targetRight - viewportWidth
+        }
+      }
+      
+      // Apply smooth scroll
+      window.scrollTo({
+        left: scrollToX,
+        top: scrollToY,
+        behavior: 'smooth'
+      })
+    }
+  }, [])
+
+  const calculateTooltipPosition = useCallback((targetRect: DOMRect) => {
+    const tooltipHeight = tooltipRef.current?.offsetHeight || 200
+    const tooltipWidth = tooltipRef.current?.offsetWidth || 400
+    const viewportHeight = window.innerHeight
+    const viewportWidth = window.innerWidth
+    
+    // Calculate available space in each direction
+    const spaceAbove = targetRect.top
+    const spaceBelow = viewportHeight - targetRect.bottom
+    const spaceLeft = targetRect.left
+    const spaceRight = viewportWidth - targetRect.right
+    
+    // Calculate center position horizontally
+    let x = targetRect.left + targetRect.width / 2 - tooltipWidth / 2
+    
+    // Calculate vertical position (prefer below, fallback to above)
+    let y: number
+    let position: 'below' | 'above' | 'left' | 'right' = 'below'
+    
+    // Determine best vertical position
+    if (spaceBelow >= tooltipHeight + TOOLTIP_OFFSET) {
+      // Plenty of space below
+      y = targetRect.bottom + TOOLTIP_OFFSET
+      position = 'below'
+    } else if (spaceAbove >= tooltipHeight + TOOLTIP_OFFSET) {
+      // Fall back to above
+      y = targetRect.top - tooltipHeight - TOOLTIP_OFFSET
+      position = 'above'
+    } else if (spaceRight >= tooltipWidth + TOOLTIP_OFFSET) {
+      // Try right side
+      y = targetRect.top + targetRect.height / 2 - tooltipHeight / 2
+      x = targetRect.right + TOOLTIP_OFFSET
+      position = 'right'
+    } else if (spaceLeft >= tooltipWidth + TOOLTIP_OFFSET) {
+      // Try left side
+      y = targetRect.top + targetRect.height / 2 - tooltipHeight / 2
+      x = targetRect.left - tooltipWidth - TOOLTIP_OFFSET
+      position = 'left'
+    } else {
+      // Default to below, even if it goes off-screen
+      y = targetRect.bottom + TOOLTIP_OFFSET
+      position = 'below'
+    }
+    
+    // Ensure tooltip stays within viewport horizontally
+    if (x < MIN_EDGE_MARGIN) {
+      x = MIN_EDGE_MARGIN
+    }
+    if (x + tooltipWidth > viewportWidth - MIN_EDGE_MARGIN) {
+      x = viewportWidth - tooltipWidth - MIN_EDGE_MARGIN
+    }
+    
+    // Ensure tooltip stays within viewport vertically
+    if (y < MIN_EDGE_MARGIN) {
+      y = MIN_EDGE_MARGIN
+    }
+    if (y + tooltipHeight > viewportHeight - MIN_EDGE_MARGIN) {
+      y = viewportHeight - tooltipHeight - MIN_EDGE_MARGIN
+    }
+    
+    // If tooltip is too wide for viewport, center it
+    if (tooltipWidth > viewportWidth - 2 * MIN_EDGE_MARGIN) {
+      x = MIN_EDGE_MARGIN
+    }
+    
+    return { x, y, position }
+  }, [])
+
   const updateHighlight = useCallback(() => {
     if (!isActive) return
 
     const target = document.querySelector(currentStep.targetElement)
     if (target) {
-      const rect = target.getBoundingClientRect()
-      setHighlightBox(rect)
-
-      // Calculate tooltip position
-      const tooltipHeight = tooltipRef.current?.offsetHeight || 200
-      const tooltipWidth = tooltipRef.current?.offsetWidth || 400
+      // First, scroll element into view if needed
+      scrollElementIntoView(target)
       
-      let y = rect.bottom + 20
-      let x = rect.left + rect.width / 2 - tooltipWidth / 2
-
-      // Keep tooltip within viewport
-      if (y + tooltipHeight > window.innerHeight) {
-        y = rect.top - tooltipHeight - 20
-      }
-      if (x < 20) x = 20
-      if (x + tooltipWidth > window.innerWidth) {
-        x = window.innerWidth - tooltipWidth - 20
-      }
-
-      setTooltipPosition({ x, y })
-
-      // Scroll into view if needed
-      if (rect.top < 0 || rect.bottom > window.innerHeight) {
-        target.scrollIntoView({ behavior: 'smooth', block: 'center' })
-      }
+      // Wait for scroll to complete before calculating positions
+      setTimeout(() => {
+        const rect = target.getBoundingClientRect()
+        setHighlightBox(rect)
+        
+        const { x, y } = calculateTooltipPosition(rect)
+        setTooltipPosition({ x, y })
+      }, 100)
     }
-  }, [isActive, currentStep])
+  }, [isActive, currentStep, scrollElementIntoView, calculateTooltipPosition])
+
+  // Debounced update for scroll and resize events
+  const updateTimeoutRef = useRef<NodeJS.Timeout | null>(null)
+  
+  const debouncedUpdateHighlight = useCallback(() => {
+    if (updateTimeoutRef.current) {
+      clearTimeout(updateTimeoutRef.current)
+    }
+    updateTimeoutRef.current = setTimeout(() => {
+      updateHighlight()
+    }, 150)
+  }, [updateHighlight])
 
   useEffect(() => {
     if (isActive) {
       updateHighlight()
-      window.addEventListener('scroll', updateHighlight, { passive: true })
-      window.addEventListener('resize', updateHighlight)
+      window.addEventListener('scroll', debouncedUpdateHighlight, { passive: true })
+      window.addEventListener('resize', debouncedUpdateHighlight)
 
       return () => {
-        window.removeEventListener('scroll', updateHighlight)
-        window.removeEventListener('resize', updateHighlight)
+        window.removeEventListener('scroll', debouncedUpdateHighlight)
+        window.removeEventListener('resize', debouncedUpdateHighlight)
+        if (updateTimeoutRef.current) {
+          clearTimeout(updateTimeoutRef.current)
+        }
       }
     }
-  }, [isActive, updateHighlight])
+  }, [isActive, debouncedUpdateHighlight])
 
   useEffect(() => {
     if (isActive) {
       updateHighlight()
     }
   }, [currentStepIndex, isActive, updateHighlight])
+
+  // Cleanup timeout on unmount
+  useEffect(() => {
+    return () => {
+      if (updateTimeoutRef.current) {
+        clearTimeout(updateTimeoutRef.current)
+      }
+    }
+  }, [])
 
   const handleNext = () => {
     if (currentStepIndex < tourSteps.length - 1) {

@@ -30,7 +30,7 @@ export default function Home() {
   }
 
   const openInfoPanel = (componentId?: string) => {
-    setActiveInfoPanel(componentId || null)
+    setActiveInfoComponent(componentId || null)
     setShowInfoPanel(true)
     setShowTour(false)
     setShowArchitecture(false)
