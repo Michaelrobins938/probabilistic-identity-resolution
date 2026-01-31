@@ -26,7 +26,7 @@ export function DataFlowPipeline() {
 
   const [packets, setPackets] = useState<DataPacket[]>([])
   const [totalProcessed, setTotalProcessed] = useState(45678)
-  const [uptime] = useState(() => Math.floor(Math.random() * 999) + 1000)
+  const [uptime, setUptime] = useState(1500) // Fixed initial value to prevent hydration mismatch
 
   // Simulate stage updates
   useEffect(() => {
