@@ -1,0 +1,57 @@
+# GitHub Linguist Configuration
+# This file controls how GitHub detects and displays language statistics
+
+# Mark vendored dependencies (excluded from language stats)
+node_modules/** linguist-vendored
+.next/** linguist-vendored
+.vite/** linguist-vendored
+
+# Mark documentation (excluded from language stats but searchable)
+docs/** linguist-documentation
+**/*.md linguist-documentation
+
+# Force TypeScript detection for demo components
+demo/nextjs-demo/components/** linguist-language=TypeScript
+demo/nextjs-demo/app/** linguist-language=TypeScript
+demo/nextjs-demo/lib/** linguist-language=TypeScript
+
+# Force Python detection for core algorithms
+src/**/*.py linguist-language=Python
+tests/**/*.py linguist-language=Python
+simulation/**/*.py linguist-language=Python
+
+# Kubernetes manifests
+k8s/**/*.yaml linguist-language=YAML
+k8s/**/*.yml linguist-language=YAML
+
+# SQL Schema files
+src/**/*.sql linguist-language=SQL
+
+# Configuration files
+*.json linguist-language=JSON
+*.yaml linguist-language=YAML
+*.yml linguist-language=YAML
+*.toml linguist-language=TOML
+
+# Shell scripts
+*.sh linguist-language=Shell
+bin/* linguist-language=Shell
+
+# Generated files (excluded from stats)
+package-lock.json linguist-generated
+yarn.lock linguist-generated
+poetry.lock linguist-generated
+
+# Binary files (excluded from stats)
+*.png binary
+*.jpg binary
+*.jpeg binary
+*.gif binary
+*.ico binary
+*.pdf binary
+*.zip binary
+*.tar.gz binary
+
+# Documentation images (excluded from stats but kept in repo)
+docs/**/*.png linguist-documentation
+docs/**/*.jpg linguist-documentation
