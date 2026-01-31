@@ -42,8 +42,8 @@ ir.track({
   timestamp: Date.now()
 });`,
     learnMoreLinks: [
-      { title: 'Event Schema Reference', url: '/docs/schema' },
-      { title: 'SDK Integration Guide', url: '/docs/sdk' },
+      { title: 'View Whitepaper', url: 'https://github.com/Michaelrobins938/probabilistic-identity-resolution/blob/main/WHITEPAPER.md' },
+      { title: 'System Architecture', url: 'https://github.com/Michaelrobins938/probabilistic-identity-resolution/blob/main/STRESS_TEST_REPORT.md' },
     ],
   },
   {
@@ -66,8 +66,8 @@ features = [
   NetworkSignature(),        # Connection type, latency
 ]`,
     learnMoreLinks: [
-      { title: 'Feature Catalog', url: '/docs/features' },
-      { title: 'Flink Architecture', url: '/docs/flink' },
+      { title: 'Feature Catalog', url: 'https://github.com/Michaelrobins938/probabilistic-identity-resolution/blob/main/WHITEPAPER.md' },
+      { title: 'Flink Architecture', url: 'https://github.com/Michaelrobins938/probabilistic-identity-resolution/blob/main/README.md' },
     ],
   },
   {
@@ -91,8 +91,8 @@ cluster = ml.predict({
 
 confidence = calibrate(cluster.probability)`,
     learnMoreLinks: [
-      { title: 'Model Architecture', url: '/docs/ml-architecture' },
-      { title: 'Accuracy Metrics', url: '/docs/metrics' },
+      { title: 'Model Architecture', url: 'https://github.com/Michaelrobins938/probabilistic-identity-resolution/blob/main/WHITEPAPER.md' },
+      { title: 'Accuracy Metrics', url: 'https://github.com/Michaelrobins938/probabilistic-identity-resolution/blob/main/STRESS_TEST_REPORT.md' },
     ],
   },
   {
@@ -114,8 +114,8 @@ RETURN
   relationships(path) as transitions,
   length(path) as journey_length`,
     learnMoreLinks: [
-      { title: 'Graph Schema', url: '/docs/graph-schema' },
-      { title: 'Query Examples', url: '/docs/queries' },
+      { title: 'Graph Schema', url: 'https://github.com/Michaelrobins938/probabilistic-identity-resolution/blob/main/WHITEPAPER.md' },
+      { title: 'Query Examples', url: 'https://github.com/Michaelrobins938/probabilistic-identity-resolution/blob/main/README.md' },
     ],
   },
   {
@@ -139,8 +139,8 @@ attribution = Attribution.shapley_value(
 
 # Returns contribution scores for each channel`,
     learnMoreLinks: [
-      { title: 'Attribution Models', url: '/docs/attribution' },
-      { title: 'Shapley Values Explained', url: '/docs/shapley' },
+      { title: 'Attribution Models', url: 'https://github.com/Michaelrobins938/probabilistic-identity-resolution/blob/main/WHITEPAPER.md' },
+      { title: 'Shapley Values Explained', url: 'https://github.com/Michaelrobins938/probabilistic-identity-resolution/blob/main/BUSINESS_CASE.md' },
     ],
   },
   {
@@ -165,8 +165,8 @@ confidence = Confidence.score(
 
 # Returns calibrated probability`,
     learnMoreLinks: [
-      { title: 'Uncertainty Quantification', url: '/docs/uncertainty' },
-      { title: 'Calibration Methods', url: '/docs/calibration' },
+      { title: 'Uncertainty Quantification', url: 'https://github.com/Michaelrobins938/probabilistic-identity-resolution/blob/main/WHITEPAPER.md' },
+      { title: 'Calibration Methods', url: 'https://github.com/Michaelrobins938/probabilistic-identity-resolution/blob/main/STRESS_TEST_REPORT.md' },
     ],
   },
   {
@@ -188,8 +188,8 @@ ws.onmessage = (event) => {
   displaySession(session);
 };`,
     learnMoreLinks: [
-      { title: 'WebSocket API', url: '/docs/websocket' },
-      { title: 'Event Streaming', url: '/docs/streaming' },
+      { title: 'WebSocket API', url: 'https://github.com/Michaelrobins938/probabilistic-identity-resolution/blob/main/README.md' },
+      { title: 'Event Streaming', url: 'https://github.com/Michaelrobins938/probabilistic-identity-resolution/blob/main/WHITEPAPER.md' },
     ],
   },
   {
@@ -212,8 +212,8 @@ projection = TSNE.transform(
 
 renderScatterPlot(projection, color_by='cluster_id')`,
     learnMoreLinks: [
-      { title: 'Visualization API', url: '/docs/viz' },
-      { title: 'Clustering Debug', url: '/docs/debug' },
+      { title: 'Visualization API', url: 'https://github.com/Michaelrobins938/probabilistic-identity-resolution/blob/main/README.md' },
+      { title: 'Clustering Debug', url: 'https://github.com/Michaelrobins938/probabilistic-identity-resolution/blob/main/STRESS_TEST_REPORT.md' },
     ],
   },
   {
@@ -235,8 +235,8 @@ const metrics = await api.query({
   attributionModel: 'shapley_value'
 });`,
     learnMoreLinks: [
-      { title: 'Dashboard API', url: '/docs/dashboard' },
-      { title: 'Analytics Guide', url: '/docs/analytics' },
+      { title: 'Dashboard API', url: 'https://github.com/Michaelrobins938/probabilistic-identity-resolution/blob/main/README.md' },
+      { title: 'Analytics Guide', url: 'https://github.com/Michaelrobins938/probabilistic-identity-resolution/blob/main/WHITEPAPER.md' },
     ],
   },
 ]
