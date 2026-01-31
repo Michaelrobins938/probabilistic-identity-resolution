@@ -156,7 +156,7 @@ export default function Home() {
             
             <div className="flex items-center gap-4">
               <p className="text-xs font-mono text-[#606060] text-center md:text-right">
-                IDENTITY RESOLUTION ENGINE — TACTICAL OPERATIONS CENTER
+                PROBABILISTIC IDENTITY RESOLUTION ENGINE
               </p>
             </div>
           </div>

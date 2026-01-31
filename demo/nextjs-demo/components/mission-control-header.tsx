@@ -118,7 +118,7 @@ export function MissionControlHeader() {
           <div className="flex items-center gap-2">
             <div className="pulse-dot status-operational"></div>
             <span className="text-lg font-bold tracking-widest text-[#e0e0e0]">
-              TACTICAL OPERATIONS CENTER
+              PROBABILISTIC IDENTITY RESOLUTION
             </span>
           </div>
           <div className="text-xs text-[#606060] font-mono border-l-2 border-[#404040] pl-4">
