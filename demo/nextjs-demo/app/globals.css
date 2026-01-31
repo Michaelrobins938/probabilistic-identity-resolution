@@ -1,26 +1,392 @@
+/* Tactical Theme - Mission Control Aesthetic */
+/* Dark, military-inspired color palette with high contrast */
+
 @tailwind base;
 @tailwind components;
 @tailwind utilities;
 
 :root {
-  --background: #000000;
-  --foreground: #ffffff;
+  /* Tactical Color Palette */
+  --tactical-black: #0a0a0a;
+  --tactical-dark: #1a1a1a;
+  --tactical-gray: #2d2d2d;
+  --tactical-light-gray: #3d3d3d;
+  --tactical-border: #404040;
+  
+  /* Alert Colors */
+  --alert-green: #00ff41;
+  --alert-amber: #ffb800;
+  --alert-red: #ff3333;
+  --alert-blue: #00bfff;
+  --alert-orange: #ff6b35;
+  
+  /* Text Colors */
+  --text-primary: #e0e0e0;
+  --text-secondary: #a0a0a0;
+  --text-muted: #606060;
+  --text-accent: #00ff41;
+  
+  /* Grid Lines */
+  --grid-color: rgba(0, 255, 65, 0.05);
+  --grid-line: rgba(0, 255, 65, 0.1);
+  
+  /* Netflix override kept for compatibility */
+  --background: #0a0a0a;
+  --foreground: #e0e0e0;
 }
 
-body {
-  color: var(--foreground);
-  background: var(--background);
-  font-feature-settings: "rlig" 1, "calt" 1;
+@layer base {
+  * {
+    @apply border-[#404040];
+  }
+  
+  body {
+    @apply bg-[#0a0a0a] text-[#e0e0e0] antialiased;
+    font-family: 'Courier New', 'Monaco', 'Consolas', monospace;
+    background-image: 
+      linear-gradient(var(--grid-line) 1px, transparent 1px),
+      linear-gradient(90deg, var(--grid-line) 1px, transparent 1px);
+    background-size: 50px 50px;
+  }
+  
+  h1, h2, h3, h4, h5, h6 {
+    font-family: system-ui, -apple-system, sans-serif;
+    font-weight: 700;
+    letter-spacing: 0.05em;
+    text-transform: uppercase;
+  }
 }
 
-/* Scrollbar styling */
+@layer components {
+  /* Tactical Card */
+  .tactical-card {
+    @apply bg-[#1a1a1a] border border-[#404040] rounded-sm;
+    @apply shadow-[0_0_20px_rgba(0,0,0,0.5)];
+    @apply backdrop-blur-sm;
+    position: relative;
+    overflow: hidden;
+  }
+  
+  .tactical-card::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    height: 2px;
+    background: linear-gradient(90deg, transparent, var(--alert-green), transparent);
+    opacity: 0.3;
+  }
+  
+  /* Tactical Header */
+  .tactical-header {
+    @apply bg-[#1a1a1a] border-b-2 border-[#404040];
+    @apply px-4 py-3 flex items-center justify-between;
+    background: linear-gradient(180deg, #1a1a1a 0%, #0f0f0f 100%);
+  }
+  
+  /* Status Indicators */
+  .status-indicator {
+    @apply inline-flex items-center gap-2 px-3 py-1 rounded-sm text-xs font-bold tracking-wider uppercase;
+    @apply border;
+    font-family: 'Courier New', monospace;
+  }
+  
+  .status-operational {
+    @apply bg-[#00ff41]/10 border-[#00ff41]/30 text-[#00ff41];
+    box-shadow: 0 0 10px rgba(0, 255, 65, 0.2);
+  }
+  
+  .status-warning {
+    @apply bg-[#ffb800]/10 border-[#ffb800]/30 text-[#ffb800];
+    box-shadow: 0 0 10px rgba(255, 184, 0, 0.2);
+  }
+  
+  .status-critical {
+    @apply bg-[#ff3333]/10 border-[#ff3333]/30 text-[#ff3333];
+    box-shadow: 0 0 10px rgba(255, 51, 51, 0.2);
+  }
+  
+  .status-info {
+    @apply bg-[#00bfff]/10 border-[#00bfff]/30 text-[#00bfff];
+    box-shadow: 0 0 10px rgba(0, 191, 255, 0.2);
+  }
+  
+  /* Terminal Text */
+  .terminal-text {
+    @apply text-sm;
+    font-family: 'Courier New', 'Monaco', 'Consolas', monospace;
+    text-shadow: 0 0 5px currentColor;
+  }
+  
+  .terminal-green {
+    @apply text-[#00ff41];
+  }
+  
+  .terminal-amber {
+    @apply text-[#ffb800];
+  }
+  
+  .terminal-red {
+    @apply text-[#ff3333];
+  }
+  
+  .terminal-blue {
+    @apply text-[#00bfff];
+  }
+  
+  /* Scan Line Effect */
+  .scan-line {
+    position: relative;
+    overflow: hidden;
+  }
+  
+  .scan-line::after {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    height: 2px;
+    background: rgba(0, 255, 65, 0.3);
+    animation: scan 4s linear infinite;
+    pointer-events: none;
+  }
+  
+  @keyframes scan {
+    0% { top: 0; opacity: 0; }
+    10% { opacity: 1; }
+    90% { opacity: 1; }
+    100% { top: 100%; opacity: 0; }
+  }
+  
+  /* Tactical Button */
+  .tactical-btn {
+    @apply px-4 py-2 border border-[#404040] rounded-sm;
+    @apply text-xs font-bold tracking-wider uppercase;
+    @apply transition-all duration-200;
+    @apply hover:border-[#00ff41] hover:text-[#00ff41];
+    @apply active:scale-95;
+    font-family: 'Courier New', monospace;
+    background: linear-gradient(180deg, #2d2d2d 0%, #1a1a1a 100%);
+  }
+  
+  .tactical-btn-primary {
+    @apply bg-[#00ff41]/20 border-[#00ff41]/50 text-[#00ff41];
+    @apply hover:bg-[#00ff41]/30;
+    box-shadow: 0 0 15px rgba(0, 255, 65, 0.2);
+  }
+  
+  .tactical-btn-warning {
+    @apply bg-[#ffb800]/20 border-[#ffb800]/50 text-[#ffb800];
+    @apply hover:bg-[#ffb800]/30;
+  }
+  
+  .tactical-btn-danger {
+    @apply bg-[#ff3333]/20 border-[#ff3333]/50 text-[#ff3333];
+    @apply hover:bg-[#ff3333]/30;
+  }
+  
+  /* Data Grid */
+  .data-grid {
+    @apply border border-[#404040] rounded-sm overflow-hidden;
+  }
+  
+  .data-grid-header {
+    @apply bg-[#2d2d2d] px-3 py-2 border-b border-[#404040];
+    @apply text-xs font-bold tracking-wider text-[#a0a0a0] uppercase;
+    font-family: 'Courier New', monospace;
+  }
+  
+  .data-grid-row {
+    @apply px-3 py-2 border-b border-[#404040]/50;
+    @apply text-sm;
+    font-family: 'Courier New', monospace;
+    @apply hover:bg-[#2d2d2d]/50;
+  }
+  
+  .data-grid-row:last-child {
+    @apply border-b-0;
+  }
+  
+  /* Alert Box */
+  .alert-box {
+    @apply border-l-4 p-4 rounded-r-sm;
+    @apply text-sm;
+    font-family: 'Courier New', monospace;
+  }
+  
+  .alert-box-info {
+    @apply border-[#00bfff] bg-[#00bfff]/10 text-[#00bfff];
+  }
+  
+  .alert-box-success {
+    @apply border-[#00ff41] bg-[#00ff41]/10 text-[#00ff41];
+  }
+  
+  .alert-box-warning {
+    @apply border-[#ffb800] bg-[#ffb800]/10 text-[#ffb800];
+  }
+  
+  .alert-box-error {
+    @apply border-[#ff3333] bg-[#ff3333]/10 text-[#ff3333];
+  }
+  
+  /* Tactical Divider */
+  .tactical-divider {
+    @apply h-px w-full my-4;
+    background: linear-gradient(90deg, transparent, #404040, transparent);
+  }
+  
+  /* Section Header */
+  .section-header {
+    @apply flex items-center gap-2 mb-4;
+    @apply text-lg font-bold uppercase tracking-wider;
+    @apply text-[#e0e0e0];
+  }
+  
+  .section-header::before {
+    content: '>';
+    @apply text-[#00ff41] font-bold;
+  }
+  
+  /* Blink Animation */
+  .blink {
+    animation: blink 1s step-end infinite;
+  }
+  
+  @keyframes blink {
+    0%, 100% { opacity: 1; }
+    50% { opacity: 0; }
+  }
+  
+  /* Pulse Animation */
+  .pulse-dot {
+    @apply w-2 h-2 rounded-full;
+    animation: pulse-dot 2s ease-in-out infinite;
+  }
+  
+  @keyframes pulse-dot {
+    0%, 100% { 
+      opacity: 1;
+      box-shadow: 0 0 0 0 rgba(0, 255, 65, 0.7);
+    }
+    50% { 
+      opacity: 0.5;
+      box-shadow: 0 0 0 8px rgba(0, 255, 65, 0);
+    }
+  }
+  
+  /* Loading/Processing Animation */
+  .processing {
+    @apply relative;
+  }
+  
+  .processing::after {
+    content: '';
+    @apply absolute inset-0;
+    background: linear-gradient(
+      90deg,
+      transparent,
+      rgba(0, 255, 65, 0.1),
+      transparent
+    );
+    animation: processing 2s linear infinite;
+  }
+  
+  @keyframes processing {
+    0% { transform: translateX(-100%); }
+    100% { transform: translateX(100%); }
+  }
+  
+  /* Corner Accents */
+  .corner-accent {
+    position: relative;
+  }
+  
+  .corner-accent::before,
+  .corner-accent::after {
+    content: '';
+    position: absolute;
+    width: 10px;
+    height: 10px;
+    border: 2px solid var(--alert-green);
+    opacity: 0.5;
+  }
+  
+  .corner-accent::before {
+    top: -2px;
+    left: -2px;
+    border-right: 0;
+    border-bottom: 0;
+  }
+  
+  .corner-accent::after {
+    bottom: -2px;
+    right: -2px;
+    border-left: 0;
+    border-top: 0;
+  }
+  
+  /* Metric Display */
+  .metric-display {
+    font-family: 'Courier New', monospace;
+  }
+  
+  .metric-label {
+    @apply text-xs uppercase tracking-wider text-[#606060];
+    font-family: 'Courier New', monospace;
+  }
+  
+  .metric-value {
+    @apply text-2xl font-bold text-[#e0e0e0];
+    font-family: 'Courier New', monospace;
+  }
+  
+  .metric-unit {
+    @apply text-sm text-[#a0a0a0];
+    font-family: 'Courier New', monospace;
+  }
+  
+  /* Timestamp */
+  .timestamp {
+    @apply text-xs text-[#606060];
+    font-family: 'Courier New', monospace;
+  }
+  
+  /* Console/Terminal Block */
+  .console-block {
+    @apply bg-[#0f0f0f] border border-[#404040] rounded-sm p-4;
+    @apply font-mono text-xs;
+    @apply overflow-auto;
+    max-height: 300px;
+  }
+  
+  /* Grid Overlay Effect */
+  .grid-overlay {
+    position: relative;
+  }
+  
+  .grid-overlay::before {
+    content: '';
+    position: absolute;
+    inset: 0;
+    background-image: 
+      linear-gradient(rgba(0, 255, 65, 0.03) 1px, transparent 1px),
+      linear-gradient(90deg, rgba(0, 255, 65, 0.03) 1px, transparent 1px);
+    background-size: 20px 20px;
+    pointer-events: none;
+  }
+}
+
+/* Scrollbar Styling */
 ::-webkit-scrollbar {
   width: 8px;
   height: 8px;
 }
 
 ::-webkit-scrollbar-track {
-  background: #141414;
+  background: #1a1a1a;
 }
 
 ::-webkit-scrollbar-thumb {
@@ -29,31 +395,33 @@ body {
 }
 
 ::-webkit-scrollbar-thumb:hover {
-  background: #606060;
+  background: #505050;
 }
 
-/* Custom animations */
+/* Selection Styling */
+::selection {
+  background: rgba(0, 255, 65, 0.3);
+  color: #00ff41;
+}
+
+/* Focus styles */
+:focus-visible {
+  outline: 2px solid #00ff41;
+  outline-offset: 2px;
+}
+
+/* Custom animations preserved from original */
 @keyframes pulse-glow {
   0%, 100% {
-    box-shadow: 0 0 20px rgba(229, 9, 20, 0.3);
+    box-shadow: 0 0 20px rgba(0, 255, 65, 0.3);
   }
   50% {
-    box-shadow: 0 0 40px rgba(229, 9, 20, 0.6);
+    box-shadow: 0 0 40px rgba(0, 255, 65, 0.6);
   }
 }
 
 .animate-pulse-glow {
   animation: pulse-glow 2s ease-in-out infinite;
-}
-
-/* Custom scrollbar for cards */
-.custom-scrollbar::-webkit-scrollbar {
-  width: 6px;
-}
-
-.custom-scrollbar::-webkit-scrollbar-thumb {
-  background: #666;
-  border-radius: 3px;
 }
 
 /* Card styles */
@@ -68,18 +436,6 @@ button {
 
 button:active {
   transform: scale(0.98);
-}
-
-/* Selection color */
-::selection {
-  background: rgba(229, 9, 20, 0.3);
-  color: white;
-}
-
-/* Focus styles */
-:focus-visible {
-  outline: 2px solid #E50914;
-  outline-offset: 2px;
 }
 
 /* Disabled state */
