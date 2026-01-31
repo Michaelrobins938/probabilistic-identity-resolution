@@ -295,6 +295,7 @@ export function ClusteringViz() {
 
       // Animate along path
       function animate() {
+        if (!source || !target) return
         particle
           .attr('opacity', 1)
           .transition()
@@ -430,7 +431,7 @@ export function ClusteringViz() {
       .attr('opacity', 0.8)
 
     // Update hover effects (CSS-based, no physics)
-    node.selectAll('.hover-glow')
+    node.selectAll<SVGCircleElement, NodeData>('.hover-glow')
       .attr('opacity', d => hoveredNode === d.id ? 0.6 : 0)
 
   }, [layout, hoveredNode, persons])
