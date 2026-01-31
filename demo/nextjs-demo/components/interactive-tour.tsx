@@ -70,7 +70,11 @@ const tourSteps: TourStep[] = [
   },
 ]
 
-export function InteractiveTour() {
+interface InteractiveTourProps {
+  onClose: () => void
+}
+
+export function InteractiveTour({ onClose }: InteractiveTourProps) {
   const [isActive, setIsActive] = useState(false)
   const [currentStepIndex, setCurrentStepIndex] = useState(0)
   const [highlightBox, setHighlightBox] = useState<DOMRect | null>(null)
@@ -282,6 +286,7 @@ export function InteractiveTour() {
     } else {
       setIsActive(false)
       setCurrentStepIndex(0)
+      onClose()
     }
   }
 
@@ -294,6 +299,7 @@ export function InteractiveTour() {
   const handleSkip = () => {
     setIsActive(false)
     setCurrentStepIndex(0)
+    onClose()
   }
 
   const handleStart = () => {

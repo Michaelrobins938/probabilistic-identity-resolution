@@ -3,6 +3,10 @@
 import { useState, useEffect, useRef } from 'react'
 import { motion, AnimatePresence } from 'framer-motion'
 
+interface ArchitectureViewProps {
+  onClose: () => void
+}
+
 interface PipelineStage {
   id: string
   name: string
@@ -146,7 +150,7 @@ const infrastructure: InfrastructureComponent[] = [
   },
 ]
 
-export function ArchitectureView() {
+export function ArchitectureView({ onClose }: ArchitectureViewProps) {
   const [selectedStage, setSelectedStage] = useState<PipelineStage | null>(null)
   const [selectedInfra, setSelectedInfra] = useState<InfrastructureComponent | null>(null)
   const [flowAnimation, setFlowAnimation] = useState(0)
@@ -242,6 +246,12 @@ export function ArchitectureView() {
             Live Data Flow
           </div>
           <div className="w-2 h-2 rounded-full bg-[#00ff41] animate-pulse" />
+          <button
+            onClick={onClose}
+            className="text-[#606060] hover:text-[#a0a0a0] text-xl ml-2"
+          >
+            ×
+          </button>
         </div>
       </div>
 

@@ -3,6 +3,11 @@
 import { useState } from 'react'
 import { motion, AnimatePresence } from 'framer-motion'
 
+interface InfoPanelProps {
+  onClose: () => void
+  initialComponent?: string | null
+}
+
 interface ComponentInfo {
   id: string
   name: string
@@ -249,8 +254,8 @@ const categories = [
   { id: 'ui', name: 'User Interface', color: '#e0e0e0' },
 ]
 
-export function InfoPanel() {
-  const [isOpen, setIsOpen] = useState(false)
+export function InfoPanel({ onClose, initialComponent }: InfoPanelProps) {
+  const [isOpen, setIsOpen] = useState(true)
   const [selectedCategory, setSelectedCategory] = useState('all')
   const [selectedComponent, setSelectedComponent] = useState<ComponentInfo | null>(null)
 
@@ -264,14 +269,12 @@ export function InfoPanel() {
 
   return (
     <>
-      {/* Toggle Button */}
+      {/* Close Button */}
       <button
-        onClick={() => setIsOpen(!isOpen)}
-        className={`fixed right-6 top-1/2 -translate-y-1/2 z-40 tactical-btn flex flex-col items-center gap-1 py-4 px-3 ${
-          isOpen ? 'border-[#00ff41] text-[#00ff41]' : ''
-        }`}
+        onClick={onClose}
+        className="fixed right-6 top-1/2 -translate-y-1/2 z-40 tactical-btn flex flex-col items-center gap-1 py-4 px-3 border-[#00ff41] text-[#00ff41]"
         style={{
-          writingMode: isOpen ? 'horizontal-tb' : 'vertical-rl',
+          writingMode: 'horizontal-tb',
           textOrientation: 'mixed',
         }}
       >
@@ -280,7 +283,7 @@ export function InfoPanel() {
           <path d="M12 16v-4M12 8h.01" />
         </svg>
         <span className="text-xs font-bold tracking-wider">
-          {isOpen ? 'Close Info Panel' : 'Component Info'}
+          Close Info Panel
         </span>
       </button>
 
@@ -303,7 +306,7 @@ export function InfoPanel() {
                 </span>
               </div>
               <button
-                onClick={() => setIsOpen(false)}
+                onClick={onClose}
                 className="text-[#606060] hover:text-[#a0a0a0] text-xl"
               >
                 ×
